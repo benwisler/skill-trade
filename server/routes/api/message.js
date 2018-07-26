@@ -8,4 +8,5 @@ router.route("/:id").get(
     // console.log("message.js!!")
     userController.getMessageBody
 )
+router.route("/delete").delete(userController.deleteMessage)
 module.exports = router

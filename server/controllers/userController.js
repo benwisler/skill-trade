@@ -46,7 +46,15 @@ module.exports = {
         .catch(function(err){
             res.json(err)
         });
+    },
+    deleteMessage: function(req,res) {
+        console.log("CONTROLLERS" + req.body)
+        db.Message.findOne({body : req.body})
+        .then(dbModel => dbModel.remove())
+        .then(dbModel => res.json(dbModel))
+        .catch(err => res.status(422).json(err));
     }
+
     // collection.findOneAndUpdate(
     //     {_id: req.query.id},
     //     {$push: {items: item}},
