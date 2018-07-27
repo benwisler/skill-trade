@@ -10,6 +10,10 @@ var MessageSchema = new Schema({
     body: {
         type: String,
         required: true
+    },
+    sender: {
+        type:String,
+        required: true,
     }
 });
 var Message = mongoose.model("Message", MessageSchema);

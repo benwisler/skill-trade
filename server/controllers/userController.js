@@ -26,7 +26,7 @@ module.exports = {
 
     },
     sendMessage: function(req, res) {
-        console.log("!!!!HERE:CONTROLLERS" + req.body.receiver)
+        console.log("!!!!HERE:CONTROLLERS" + req.body.sender)
         db.Message.create(req.body)
         .then(function(dbMessage){
             console.log(dbMessage);
@@ -47,13 +47,29 @@ module.exports = {
             res.json(err)
         });
     },
-    deleteMessage: function(req,res) {
-        console.log("CONTROLLERS" + req.body)
-        db.Message.findOne({body : req.body})
-        .then(dbModel => dbModel.remove())
-        .then(dbModel => res.json(dbModel))
-        .catch(err => res.status(422).json(err));
+    deleteMessage: function(req, res) {
+        // req.map(element => {
+        //     console.log(element)
+        // })
+        // console.log(JSON.stringify(messageData) + "!!")
+        // console.log("CONTROLLERS" + req.id + "!!")
+        console.log(req.params.id)
+        console.log(req.params.username)
+        // var oId = new mongo.ObjectID(req.params.id);
+        db.Message
+        // .findOneAndUpdate({ username: req.params.username }, { $pull: {"message": {"_id": { "$oid": req.params.id  }}}})
+        .findByIdAndRemove({ _id: req.params.id})
+    //     // .update({ message: req.params.id}, {$pullAll: {message: { _id = req.params.id}}})
+        .then(dbModel => {
+            dbModel.remove()
+            console.log("MADEIT" + req.params.id)
+
+        }
+    )
+    //     .then(dbModel => res.json(dbModel))
+    //     .catch(err => res.status(422).json(err));
     }
+    
 
     // collection.findOneAndUpdate(
     //     {_id: req.query.id},

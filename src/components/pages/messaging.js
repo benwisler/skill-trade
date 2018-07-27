@@ -3,8 +3,16 @@ import API from "./../utils/API";
 import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
 import { MessageListItem, MessageList } from "./../Message";
 import ReactDOM from "react-dom";
-
+import DeleteBtn from "./../DeleteBtn";
+import "./../../App.css";
+import DeleteButton from "./../DeleteBtn";
 class Messaging extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      messageProps: []
+    };
+  }
   arr = [];
   state = {
     messages: [],
@@ -31,49 +39,49 @@ class Messaging extends Component {
   };
 
   renderMessages = message => {
-      var para = document.createElement("p");
-      var node = document.createTextNode(message);
-      para.appendChild(node);
-      var element = document.getElementById("messageDiv");
-      element.appendChild(para);
-    }
-    getMessageBody = id => {
-      console.log(id);
-      API.getMessageBody(id).then(res => {
-        // this.setState(state => ({
-        //   messageBody: [...state.messageBody, res]
-        // }))
-        this.state.messageBody.push(res);
-        // this.setState(
-        //   this.state
-        // )
-        // this.state
-        // for(var i =0; i < this.state.messageBody.length ; i++) {
-  
-        console.log(res.data[0].body + "@2222222");
-        // ReactDOM.append(res.data[0].body, document.getElementById('messageDiv'));
-        console.log(this.state.messageBody[0].data[0].body + "@#####33");
-        var para = document.createElement("p");
-        var node = document.createTextNode(res.data[0].body);
-        var delButton = document.createElement("BUTTON");
-        var t = document.createTextNode("Delete")
-        
-        para.appendChild(node);
-        delButton.appendChild(t);
-        var element = document.getElementById("messageDiv");
-        element.appendChild(para);
-        element.appendChild(delButton);
-        delButton.onclick = function(event) {
-          event.preventDefault();
-          console.log(node)
-          API.deleteMessage(node)
-        }
-        // delButton.onClick(alert(t))
-        // return res.data[0].body; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-         return para;   
-        // this.renderMessages(res.data[0].body);
-      });
-    }
+    var para = document.createElement("p");
+    var node = document.createTextNode(message);
+    para.appendChild(node);
+    var element = document.getElementById("messageDiv");
+    element.appendChild(para);
+  };
+  getMessageBody = id => {
+    console.log(id);
+    API.getMessageBody(id).then(res => {
+      // this.setState(state => ({
+      //   messageBody: [...state.messageBody, res]
+      // }))
+      this.state.messageProps.push(res);
+      // this.setState(
+      //   this.state
+      // )
+      // this.state
+      // for(var i =0; i < this.state.messageBody.length ; i++) {
+      // console.log(this.state.messageProps)
+      // console.log(res.data[0].body + "@2222222");
+      // // ReactDOM.append(res.data[0].body, document.getElementById('messageDiv'));
+      // console.log(this.state.messageBody[0].data[0].body + "@#####33");
+      // var para = document.createElement("p");
+      // var node = document.createTextNode(res.data[0].body);
+      // var delButton = document.createElement("BUTTON");
+      // var t = document.createTextNode("Delete")
+
+      // para.appendChild(node);
+      // delButton.appendChild(t);
+      // var element = document.getElementById("messageDiv");
+      // element.appendChild(para);
+      // element.appendChild(delButton);
+      // delButton.onclick = function(event) {
+      //   event.preventDefault();
+      //   console.log(node)
+      //   API.deleteMessage(node)
+      // }
+      // // delButton.onClick(alert(t))
+      // // return res.data[0].body; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //  return para;
+      // this.renderMessages(res.data[0].body);
+    });
+  };
   displayMessages = event => {
     // e.preventDefault();
     event.preventDefault();
@@ -96,15 +104,35 @@ class Messaging extends Component {
 
       //   )
       // }
+    });
+  };
+  deleteMessage = (username, id) => {
+    console.log(id);
+    API.deleteMessage({
+      username: username,
+      id: id
     })
-  }
+      .then(
+      this.state.messageProps.map(message => {
+        if (message.data[0]._id === id) {
+          console.log(id);
+        }
+      })
+    );
+    // this.state.messageProps.splice(_.indexOf(this.state.messageProps, _.findWhere(this.state.messageProps, { id : id})), 1);
+  };
   handleFormSubmit = event => {
     event.preventDefault();
+    console.log(this.props.username + "LINE 109!!!!!!!!!!!!!!!!!!");
     if (this.state.receiver && this.state.body) {
       API.sendMessage({
         receiver: this.state.receiver,
-        body: this.state.body
+        body: this.state.body,
+        sender: this.props.username
       })
+        .then(res => {
+          console.log(res);
+        })
         // .then(res => this.loadBooks())
         .catch(err => console.log(err));
     }
@@ -115,18 +143,32 @@ class Messaging extends Component {
       [name]: value
     });
   };
-
-  provideMessages = () => {
-    this.state.messageBody.map(message => {
-      console.log(message.body);
-    });
+  provideMessagesB = () => {
+    let data = this.state.messageProps;
+    const listItems = data.map(d => (
+      // <li receiver={d.data.}
+      <div class="messageClass" id={d.data[0]._id} key={d.data[0]._id}>
+        <li>From:{d.data[0].sender}</li>
+        <li>Body:{d.data[0].body}</li>
+        <DeleteButton onClick={() => this.deleteMessage(this.props.username, d.data[0]._id)}>
+          Delete
+        </DeleteButton>
+      </div>
+    ));
+    console.log(listItems);
+    ReactDOM.render(listItems, document.getElementById("messageDiv"));
+    this.forceUpdate();
+    // return listItems;
   };
-  respond = (event) => {
+  provideMessages = () => {
+    window.setTimeout(this.provideMessagesB, 4000);
+  };
+  respond = event => {
     event.preventDefault();
-    console.log(this.state.messageBody)
+    console.log(this.state.messageBody);
 
     // alert(delButton)
-  }
+  };
   //   // When this component mounts, grab the book with the _id of this.props.match.params.id
   //   // e.g. localhost:3000/books/599dcb67f0f16317844583fc
   //   componentDidMount() {
@@ -185,8 +227,9 @@ class Messaging extends Component {
                   );
                 }) */}
               {/* }}>View Messages</button> */}
-                <Button onClick={this.renderMessages}>Show Messages</Button>
+              <Button onClick={this.provideMessagesB}>Show Messages</Button>
               <div id="messageDiv" />
+
               {/* {this.state.messageBody.map(message => {
                 return (
                   <MessageListItem id="center" >
@@ -228,7 +271,20 @@ class Messaging extends Component {
               />
             </FormGroup> */}
           </Form>
+          {/* {this.provideMessages} */}
+          {/* // res.data.map((message) => { */}
+          {/* //   return (
+            //     <div><h1>{message.props.children}</h1></div>
+            //   )
+            // })
+          
+          // [1].props.children
+
+          })
+        } */}
+          {/* ["0"].props.children */}
         </div>
+
         <div>
           <h1>Inbox</h1>
           {/* <p>{this.state.user}</p> */}

@@ -10,9 +10,9 @@ export default {
       console.log("message API")
       return axios.post("/user/send", receiverData)
   },
-  deleteMessage: function(messageText) {
-    console.log("message API")
-    return axios.delete("/message/delete", messageText)
+  deleteMessage: function(messageData) {
+    console.log("message API" + messageData.id)
+    return axios.delete("/message/delete/"+ messageData.username+"/"+messageData.id)
 },
   getMessageBody: function(id) {
       console.log("here API body" + id);

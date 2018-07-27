@@ -76,3 +76,11 @@ li {
   display: flex;
   justify-content: center;
 }
+#messageDiv {
+  border: 1px solid blue;
+  color: darkgoldenrod;
+}
+.messageClass {
+  border: 1px solid orange;
+  padding: 10px
+}
