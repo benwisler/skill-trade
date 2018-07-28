@@ -4,6 +4,8 @@ import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
 import { MessageListItem, MessageList } from "./../Message";
 import ReactDOM from "react-dom";
 import DeleteBtn from "./../DeleteBtn";
+import { UncontrolledCollapse, CardBody, Card } from "reactstrap";
+
 import "./../../App.css";
 import DeleteButton from "./../DeleteBtn";
 class Messaging extends Component {
@@ -21,7 +23,7 @@ class Messaging extends Component {
     body: ""
   };
   componentDidMount() {
-      // console.log(this.props.id)
+    // console.log(this.props.id)
     this.getUser(this.props.username);
   }
   getUser = username => {
@@ -106,12 +108,12 @@ class Messaging extends Component {
       // }
     });
   };
-  deleteFromProps = (id) => {
-    console.log(this.state.messageProps)
+  deleteFromProps = id => {
+    console.log(this.state.messageProps);
     for (var i = 0; i < this.state.messageProps; i++) {
       console.log(id);
     }
-  }
+  };
   deleteMessage = (username, id) => {
     console.log(id);
     API.deleteMessage({
@@ -119,7 +121,7 @@ class Messaging extends Component {
       id: id
     });
     // console.log(res)
-    this.deleteFromProps(id)
+    this.deleteFromProps(id);
 
     // this.state.messageProps.map(message => {
     //   if (message.data[0]._id === id) {
@@ -145,6 +147,10 @@ class Messaging extends Component {
         .catch(err => console.log(err));
     }
   };
+  sayHi = event => {
+    event.preventDefault();
+    console.log(this.state.body)
+  }
   handleInputChange = event => {
     const { name, value } = event.target;
     this.setState({
@@ -163,6 +169,35 @@ class Messaging extends Component {
         >
           Delete
         </DeleteButton>
+        <div>
+          <Button color="primary" id="toggler" style={{ marginBottom: "1rem" }}>
+            Toggle
+          </Button>
+          <UncontrolledCollapse toggler="#toggler">
+            <Card>
+              <CardBody>
+                <Form>
+                  <FormGroup>
+                    <Label for="exampleText">Reply</Label>
+                    <Input
+                      type="textarea"
+                      name="body"
+                      id="exampleText"
+                      onChange={this.handleInputChange}
+                      value={this.state.body}
+                    />
+                    <Button
+                      // disabled={!(this.state.body)}
+                      onClick={this.sayHi}
+                    >
+                      Send Message
+                    </Button>
+                  </FormGroup>
+                </Form>
+              </CardBody>
+            </Card>
+          </UncontrolledCollapse>
+        </div>
       </div>
     ));
     console.log(listItems);
