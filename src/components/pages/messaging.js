@@ -21,7 +21,7 @@ class Messaging extends Component {
     body: ""
   };
   componentDidMount() {
-    //   console.log(this.props.username)
+      // console.log(this.props.id)
     this.getUser(this.props.username);
   }
   getUser = username => {
@@ -106,19 +106,27 @@ class Messaging extends Component {
       // }
     });
   };
+  deleteFromProps = (id) => {
+    console.log(this.state.messageProps)
+    for (var i = 0; i < this.state.messageProps; i++) {
+      console.log(id);
+    }
+  }
   deleteMessage = (username, id) => {
     console.log(id);
     API.deleteMessage({
       username: username,
       id: id
-    })
-      .then(
-      this.state.messageProps.map(message => {
-        if (message.data[0]._id === id) {
-          console.log(id);
-        }
-      })
-    );
+    });
+    // console.log(res)
+    this.deleteFromProps(id)
+
+    // this.state.messageProps.map(message => {
+    //   if (message.data[0]._id === id) {
+    //     console.log(id);
+    // }
+    // })
+
     // this.state.messageProps.splice(_.indexOf(this.state.messageProps, _.findWhere(this.state.messageProps, { id : id})), 1);
   };
   handleFormSubmit = event => {
@@ -150,7 +158,9 @@ class Messaging extends Component {
       <div class="messageClass" id={d.data[0]._id} key={d.data[0]._id}>
         <li>From:{d.data[0].sender}</li>
         <li>Body:{d.data[0].body}</li>
-        <DeleteButton onClick={() => this.deleteMessage(this.props.username, d.data[0]._id)}>
+        <DeleteButton
+          onClick={() => this.deleteMessage(this.props.username, d.data[0]._id)}
+        >
           Delete
         </DeleteButton>
       </div>
